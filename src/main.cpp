@@ -1,27 +1,37 @@
-//PLATFORM GLOBALS
+//Platform Globals
 #include "paradox_lib.h"
+#include "input.h"
 #include "platform.h"
-static bool running = true;
 
-//PLATFORM FUNCTIONS
-bool platform_create_window(int width,int height,char* title);
-void platform_update_window();
+#define APIENTRY
+#define GL_GLEXT_PROTOTYPES
+#include "glcorearb.h"
 
-//WINDOWS PLATFORM
+//Windows Platform
 #ifdef _WIN32
 #include "win32_platform.cpp"
 #endif
 
+#include "gl_renderer.cpp"
+
 int main()
 {
+    BumpAllocator transientStorage = make_bump_allocator(MB(50));
 
-    platform_create_window(1280,720,"Jenison Paradox");
-    while(running)
+    platform_create_window(1200,720,"Temp");
+    input.screenSizeX = 1200;
+    input.screenSizeY = 720;
+
+    gl_init(&transientStorage);
+
+    while (running)
     {
-        //update
+        //Update
         platform_update_window();
+        gl_render();
 
-        
+        platform_swap_buffers();
+    }
 
     return 0;
 }
