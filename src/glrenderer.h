@@ -1,5 +1,5 @@
 #pragma once
-#include "schnitzel_lib.h"
+#include "Paradox_lib.h"
 #include "glcorearb.h"
  
 // #############################################################################
