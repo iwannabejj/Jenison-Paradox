@@ -1,14 +1,20 @@
 #pragma once
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<sys/stat.h>
 
 #ifdef _WIN32
 #define DEBUG_BREAK() __debugbreak()
 #endif
-//Logging
-enum TextColor
+
+#define BIT(x) 1 << (x)
+#define KB(x) ((unsigned long long)1024 * x)
+#define MB(x) ((unsigned long long)1024 * KB(x))
+#define GB(x) ((unsigned long long)1024 * MB(x))
+
+enum TextColour
 {
     TEXT_COLOR_BLACK,
     TEXT_COLOR_RED,
@@ -30,7 +36,7 @@ enum TextColor
 };
 
 template <typename... Args>
-void _log(char* prefix, char* msg, TextColor textcolor, Args... args)
+void _log(char* prefix, char* msg, TextColour textcolor, Args... args)
 {
     static char* TextColorTable[TEXT_COLOR_COUNT] =
     {
@@ -74,9 +80,9 @@ void _log(char* prefix, char* msg, TextColor textcolor, Args... args)
         SM_ERROR("ASSERTION HIT!")      \
     }                                   \
 }
-//
-// Logging
-//
+
+
+//BUMP ALLOCATOR
 struct BumpAllocator
 {
     size_t capacity;
@@ -110,30 +116,30 @@ char* bump_alloc(BumpAllocator* bumpAllocator, size_t size)
     if(bumpAllocator->used + allignedSize <= bumpAllocator->capacity)
     {
         result = bumpAllocator->memory + bumpAllocator->used;
-        bumpAllocator->used +=allignedSize;
+        bumpAllocator->used += allignedSize;
     }
     else
     {
         SM_ASSERT(false, "BumpAllocator is Full");
     }
+
     return result;
 }
-//
-//          File I/O       
-//
+
+//FILE IO
 long long get_timestamp(char* file)
 {
-    struct stat file_stat ={};
+    struct stat file_stat = {};
     stat(file, &file_stat);
     return file_stat.st_mtime;
 }
 
-bool file_exists(char* filepath)
+bool file_exists(char* filePath)
 {
-    SM_ASSERT(filepath, "No filePath Supplied");
+    SM_ASSERT(filePath, "No filePath Supplied!");
 
-    auto file =fopen(filepath, "rb");
-    if (!file)
+    auto file = fopen(filePath, "rb");
+    if(!file)
     {
         return false;
     }
@@ -141,101 +147,99 @@ bool file_exists(char* filepath)
 
     return true;
 }
+
 long get_file_size(char* filePath)
 {
-    SM_ASSERT(filePath, "No filePath supplied!");
+    SM_ASSERT(filePath, "No FilePath Supplied!");
 
-    long fileSize =0;
+    long fileSize = 0;
     auto file = fopen(filePath, "rb");
     if(!file)
     {
-        SM_ERROR("Failed opening File: %s", filePath);
+        SM_ERROR("Failed Opening File: %s", filePath);
         return 0;
     }
-    
+
     fseek(file, 0 , SEEK_END);
     fileSize = ftell(file);
-    fseek(file, 0 , SEEK_SET);
+    fseek(file, 0, SEEK_SET);
     fclose(file);
 
     return fileSize;
 }
 
-// Read File
-
-char* read_file(char* filePath, int* filesize, char* buffer)
+char* read_file(char* filePath, int* fileSize, char* buffer)
 {
-    SM_ASSERT(filePath, "No filePath supplied!");
-    SM_ASSERT(filesize, "No fileSize supplied!");
-    SM_ASSERT(buffer, "No buffer supplied!");
-
-    *filesize = 0;
+    SM_ASSERT(filePath, "No FilePath Supplied!");
+    SM_ASSERT(fileSize, "No FileSize Supplied!");
+    SM_ASSERT(buffer, "No Buffer Supplied!");
+    
+    *fileSize = 0;
     auto file = fopen(filePath, "rb");
     if(!file)
     {
-        SM_ERROR("Failed opening File: %s", filePath);
+        SM_ERROR("Failed Opening File : %s", filePath);
         return nullptr;
     }
 
-    fseek(file, 0 , SEEK_END);
-    *filesize = ftell(file);
-    fseek(file, 0 , SEEK_SET);
+    fseek(file, 0, SEEK_END);
+    *fileSize = ftell(file);
+    fseek(file, 0, SEEK_SET);
 
-    memset(buffer, 0 , *filesize + 1);
-    fread(buffer, sizeof(char), *filesize, file);
+    memset(buffer, 0, *fileSize + 1);
+    fread(buffer, sizeof(char), *fileSize, file);
 
     fclose(file);
 
     return buffer;
 }
-char* read_file(char* filePath, int* filesize, BumpAllocator* bumpAllocator)
+
+char* read_file(char* filePath, int* fileSize, BumpAllocator* bumpAllocator)
 {
-
     char* file = 0;
-    long filesize2 = get_file_size(filePath);
-    
-    if(filesize2)
+    long fileSize2 = get_file_size(filePath);
+
+    if(fileSize2)
     {
-        char* buffer = bump_alloc(bumpAllocator, filesize2 + 1);
+        char* buffer = bump_alloc(bumpAllocator, fileSize2 + 1);
 
-        file = read_file(filePath, filesize, buffer);
-
+        file = read_file(filePath, fileSize, buffer);
     }
 
     return file;
 }
+
 void write_file(char* filePath, char* buffer, int size)
 {
-    SM_ASSERT(filePath, "No filePath supplied!");
-    SM_ASSERT(buffer, "No buffer supplied!");
-
+    SM_ASSERT(filePath, "No filePath Supplied!");
+    SM_ASSERT(buffer, "No buffer Supplied!");
     auto file = fopen(filePath, "wb");
     if(!file)
     {
-        SM_ERROR("Failed opening File: %s", filePath);
+        SM_ERROR("Failed Opening File : %s", filePath);
         return;
     }
-
 
     fwrite(buffer, sizeof(char), size, file);
     fclose(file);
 }
+
 bool copy_file(char* fileName, char* outputName, char* buffer)
 {
     int fileSize = 0;
-    char* data =read_file(fileName, &fileSize, buffer );
+    char* data = read_file(fileName, &fileSize, buffer);
 
     auto outputFile = fopen(outputName, "wb");
     if(!outputFile)
     {
-        SM_ERROR("Failed opening File: %s", outputName)
+        SM_ERROR("Failed Opening File : %s", outputName);
         return false;
     }
 
     int result = fwrite(data, sizeof(char), fileSize, outputFile);
     if(!result)
     {
-        SM_ERROR("Failed opening File: %s", outputName);
+        SM_ERROR("Failed Opening File : %s", outputName);
         return false;
     }
 
@@ -244,19 +248,17 @@ bool copy_file(char* fileName, char* outputName, char* buffer)
     return true;
 }
 
-bool copy_file(char* fileName, char* outputName, BumpAllocator* BumpAllocator)
+bool copy_file(char* fileName, char* outputName, BumpAllocator* bumpAllocator)
 {
     char* file = 0;
     long fileSize2 = get_file_size(fileName);
 
     if(fileSize2)
     {
-        char* buffer = bump_alloc(BumpAllocator, fileSize2 + 1);
+        char* buffer = bump_alloc(bumpAllocator , fileSize2 + 1);
 
         return copy_file(fileName, outputName, buffer);
     }
 
     return false;
-
-
 }
