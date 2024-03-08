@@ -1,6 +1,6 @@
 #pragma once
 <<<<<<< HEAD:src/glrenderer.h
-#include "Paradox_lib.h"
+#include "paradox_lib.h"
 =======
 
 #include "paradox_lib.h"
