@@ -23,8 +23,8 @@ Sprite get_Sprite(SpriteID spriteID)
     {
         case SPRITE_ATLAS:
         {
-            sprite.atlasOffset = {0, 0};
-            sprite.spriteSize = {16, 16};
+            sprite.atlasOffset = {28, 0};
+            sprite.spriteSize = {32, 32};
         }
     }
 

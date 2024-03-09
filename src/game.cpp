@@ -4,10 +4,13 @@
 
 
 
-
 void update_game()
 {
-    
-    draw_sprite(SPRITE_ATLAS, {100.0f,100.0f}, {100.0f, 100.0f});
-    
+    for(int x = 0; x < 10; x++)
+    {
+        for(int y = 0; y < 10; y++)
+        {
+            draw_sprite(SPRITE_ATLAS, {x * 100.0f,y * 100.0f}, {100.0f, 100.0f});
+        } 
+    }       
 }
