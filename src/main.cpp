@@ -1,7 +1,9 @@
 //Platform Globals
 #include "paradox_lib.h"
 #include "input.h"
+#include "game.cpp"
 #include "platform.h"
+
 
 #define APIENTRY
 #define GL_GLEXT_PROTOTYPES
