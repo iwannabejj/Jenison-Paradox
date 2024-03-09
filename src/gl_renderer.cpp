@@ -126,7 +126,7 @@ bool gl_init(BumpAllocator* transientStorage)
     {
       glGenBuffers(1, &glContext.transformSBOID);
       glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0 , glContext.transformSBOID);
-      glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Transform) * MAX_TRANSFORMS, renderData.transforms , GL_DYNAMIC_DRAW);
+      glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Transform) * MAX_TRANSFORMS, renderData->transforms , GL_DYNAMIC_DRAW);
     }
 
     {
@@ -149,15 +149,15 @@ void gl_render()
   glClearColor(119.0f / 255.0f, 33.0f / 255.0f, 111.0f / 255.0f, 1.0f);
   glClearDepth(0.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glViewport(0, 0, input.screenSizeX, input.screenSizeY);
+  glViewport(0, 0, input->screenSizeX, input->screenSizeY);
 
-  Vec2 screenSize = {(float)input.screenSizeX, (float)input.screenSizeY};
+  Vec2 screenSize = {(float)input->screenSizeX, (float)input->screenSizeY};
   glUniform2fv(glContext.screenSizeID, 1, &screenSize.x);
 
   {
-    glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0,  sizeof(Transform) * renderData.transformCount , renderData.transforms);
-    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, renderData.transformCount); 
+    glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0,  sizeof(Transform) * renderData->transformCount , renderData->transforms);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, renderData->transformCount); 
 
-    renderData.transformCount = 0;
+    renderData->transformCount = 0;
   }
 }

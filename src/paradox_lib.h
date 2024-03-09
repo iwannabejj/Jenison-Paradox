@@ -7,6 +7,7 @@
 
 #ifdef _WIN32
 #define DEBUG_BREAK() __debugbreak()
+#define EXPORT_FN __declspec(dllexport)
 #endif
 
 #define BIT(x) 1 << (x)
