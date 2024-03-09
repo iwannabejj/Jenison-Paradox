@@ -4,7 +4,7 @@
 
 enum SpriteID
 {
-    SPRITE_RAINBOW,
+    SPRITE_ATLAS,
 
     SPRITE_COUNT
 };
@@ -15,13 +15,13 @@ struct Sprite
     IVec2 spriteSize;
 };
 
-Sprite get_Sprite(SpriteID spriteid)
+Sprite get_Sprite(SpriteID spriteID)
 {
     Sprite sprite = {};
     
-    switch(spriteid)
+    switch(spriteID)
     {
-        case SPRITE_RAINBOW:
+        case SPRITE_ATLAS:
         {
             sprite.atlasOffset = {0, 0};
             sprite.spriteSize = {16, 16};

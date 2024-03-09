@@ -8,6 +8,6 @@
 void update_game()
 {
     
-    draw_sprite(SPRITE_RAINBOW, { 100.0f, 100.0f}, {100.0f, 100.0f});
+    draw_sprite(SPRITE_ATLAS, {100.0f,100.0f}, {100.0f, 100.0f});
     
 }

@@ -9,10 +9,10 @@ const char* TEXTURE_PATH = "assets/texture/TEXTURE_ATLAS.png";
 
 struct GLContext
 {
-    GLuint programID;
-    GLuint textureID;
-    GLuint transformSBOID;
-    GLuint screenSizeID;
+  GLuint programID;
+  GLuint textureID;
+  GLuint transformSBOID;
+  GLuint screenSizeID;
 };
 
 static GLContext glContext;
@@ -160,6 +160,4 @@ void gl_render()
 
     renderData.transformCount = 0;
   }
-
-  glDrawArrays(GL_TRIANGLES, 0 , 6);
 }
