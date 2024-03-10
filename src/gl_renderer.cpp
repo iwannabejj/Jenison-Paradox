@@ -13,6 +13,7 @@ struct GLContext
     GLuint textureID;
     GLuint transformSBOID;
     GLuint screenSizeID;
+    GLuint orthoProjectionID;
 };
 
 static GLContext glContext;
@@ -131,6 +132,7 @@ bool gl_init(BumpAllocator* transientStorage)
 
     {
       glContext.screenSizeID = glGetUniformLocation(glContext.programID, "screenSize");
+      glContext.orthoProjectionID = glGetUniformLocation(glContext.programID, "orthoProjection");
     }
 
     glEnable(GL_FRAMEBUFFER_SRGB);
@@ -153,6 +155,13 @@ void gl_render(BumpAllocator* transientStorage)
 
   Vec2 screenSize = {(float)input->screenSizeX, (float)input->screenSizeY};
   glUniform2fv(glContext.screenSizeID, 1, &screenSize.x);
+
+  OrthographicCamera2D camera = renderData->gameCamera;
+  Mat4 orthoProjection = orthographic_projection(camera.position.x - camera.dimensions.x / 2.0f, 
+                                                 camera.position.x + camera.dimensions.x / 2.0f, 
+                                                 camera.position.y - camera.dimensions.y / 2.0f, 
+                                                 camera.position.y + camera.dimensions.y / 2.0f);
+  glUniformMatrix4fv(glContext.orthoProjectionID, 1, GL_FALSE, &orthoProjection.ax);
 
   {
     glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0,  sizeof(Transform) * renderData->transformCount , renderData->transforms);

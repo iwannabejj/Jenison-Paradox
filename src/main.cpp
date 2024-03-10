@@ -40,7 +40,14 @@ int main()
         return -1;
     }
 
-    platform_create_window(1280,720,"Pixel Plungs");
+    gameState = (GameState*)bump_alloc(&persistentStorage, sizeof(GameState));
+    if(!gameState)
+    {
+        SM_ERROR("Failed to allocate GameState");
+        return -1;
+    }
+
+    platform_create_window(1280,720,"Jenison Paradox");
     input->screenSizeX = 1280;
     input->screenSizeY = 720;
 
@@ -52,7 +59,7 @@ int main()
         gl_render(&transientStorage);
         //Update
         platform_update_window();
-        update_game(renderData, input);
+        update_game(gameState, renderData, input);
         
 
         platform_swap_buffers();
@@ -64,9 +71,9 @@ int main()
 }
 
 
-void update_game(RenderData* renderDataIn , Input* inputIn)
+void update_game(GameState* gameStateIn, RenderData* renderDataIn , Input* inputIn)
 {
-    update_game_ptr(renderDataIn, inputIn); 
+    update_game_ptr(gameStateIn,renderDataIn, inputIn); 
 }
 
 void reload_game_dll(BumpAllocator* transientStorage)
