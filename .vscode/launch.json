@@ -1,14 +1,14 @@
 {
     "version": "0.2.0",
     "configurations": [
-       {
-           "name": "Launch",
-           "type": "cppvsdbg",
-           "request": "launch",
-           "program": "${workspaceFolder}/paradox",
-           "args": [],
-           "cwd": "${workspaceFolder}",
-           "console": "integratedTerminal"
-       }
+        {
+            "name": "Launch",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/plungs",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        }
     ]
 }
