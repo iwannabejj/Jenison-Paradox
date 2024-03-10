@@ -1,4 +1,5 @@
 #pragma once
+
 static bool running = true;
 
 //Platform Functions

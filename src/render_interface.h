@@ -8,10 +8,10 @@ constexpr int MAX_TRANSFORMS = 1000;
 
 struct Transform
 {
-    IVec2 atlasOffset;
-    IVec2 spriteSize;
     Vec2 pos;
     Vec2 size;
+    IVec2 atlasOffset;
+    IVec2 spriteSize;
 };
 
 struct RenderData

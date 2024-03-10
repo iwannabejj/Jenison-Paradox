@@ -4,7 +4,6 @@
 #include "game.h"
 #include "platform.h"
 
-
 #define APIENTRY
 #define GL_GLEXT_PROTOTYPES
 #include "glcorearb.h"
@@ -16,12 +15,10 @@
 
 #include "gl_renderer.cpp"
 
-// Game DLL (Hot Code Loading)
 typedef decltype(update_game) update_game_type;
-static update_game_type* update_game_ptr;
+static update_game_type *update_game_ptr;
 
 void reload_game_dll(BumpAllocator* transientStorage);
-
 
 int main()
 {
@@ -29,58 +26,61 @@ int main()
     BumpAllocator persistentStorage = make_bump_allocator(MB(50));
 
     input = (Input*)bump_alloc(&persistentStorage, sizeof(Input));
+    
     if(!input)
     {
-        SM_ERROR("Failed to allocate Input");
-        return -1;
-    }
-    renderData = (RenderData*)bump_alloc(&persistentStorage, sizeof(RenderData));
-    if(!renderData)
-    {
-        SM_ERROR("Failed to allocate RenderData");
+        SM_ERROR("Failed To Allocate Input");
         return -1;
     }
 
-    platform_create_window(1200,720,"Temp");
-    input->screenSizeX = 1200;
+    renderData = (RenderData*)bump_alloc(&persistentStorage, sizeof(RenderData));
+    if(!renderData)
+    {
+        SM_ERROR("Failed To Allocate RenderData");
+        return -1;
+    }
+
+    platform_create_window(1280,720,"Pixel Plungs");
+    input->screenSizeX = 1280;
     input->screenSizeY = 720;
 
     gl_init(&transientStorage);
 
     while (running)
     {
+        reload_game_dll(&transientStorage);
+        gl_render(&transientStorage);
         //Update
         platform_update_window();
         update_game(renderData, input);
-        gl_render();
+        
 
         platform_swap_buffers();
 
-        transientStorage.used =0;
+        transientStorage.used = 0;
     }
-
+    
     return 0;
 }
 
-void update_game(RenderData* renderDataIn, Input* inputIn)
+
+void update_game(RenderData* renderDataIn , Input* inputIn)
 {
-    update_game_ptr(renderDataIn, inputIn);
+    update_game_ptr(renderDataIn, inputIn); 
 }
-
-
 
 void reload_game_dll(BumpAllocator* transientStorage)
 {
     static void* gameDLL;
     static long long lastEditTimestampGameDLL;
 
-    long long currentTimestampGameDLL = get_timestamp("game.dll");
-    if(currentTimestampGameDLL > lastEditTimestampGameDLL)
+    long long currentTimeStampGameDLL = get_timestamp("game.dll");
+    if(currentTimeStampGameDLL > lastEditTimestampGameDLL)
     {
-        if(gameDLL) 
+        if(gameDLL)
         {
             bool freeResult = platform_free_dynamic_library(gameDLL);
-            SM_ASSERT(freeResult, "Failed to free game.dll");
+            SM_ASSERT(freeResult, "Failed To Free game.dll");
             gameDLL = nullptr;
             SM_TRACE("Freed game.dll");
         }
@@ -92,11 +92,11 @@ void reload_game_dll(BumpAllocator* transientStorage)
         SM_TRACE("Copied game.dll into game_load.dll");
 
         gameDLL = platform_load_dynamic_library("game_load.dll");
-        SM_ASSERT(gameDLL, "Failed to load game.dll");
+        SM_ASSERT(gameDLL, "Failed to Load game.dll");
 
         update_game_ptr = (update_game_type*)platform_load_dynamic_function(gameDLL, "update_game");
-        SM_ASSERT(update_game_ptr, "Failed to load update_game function");
-        lastEditTimestampGameDLL = currentTimestampGameDLL;
-    }   
+        SM_ASSERT(update_game_ptr, "Failed to Load update_game function");
+        lastEditTimestampGameDLL = currentTimeStampGameDLL;
+    }
 
 }

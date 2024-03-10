@@ -15,16 +15,16 @@ struct Sprite
     IVec2 spriteSize;
 };
 
-Sprite get_Sprite(SpriteID spriteID)
+Sprite get_Sprite(SpriteID spriteid)
 {
     Sprite sprite = {};
     
-    switch(spriteID)
+    switch(spriteid)
     {
         case SPRITE_ATLAS:
         {
-            sprite.atlasOffset = {28, 0};
-            sprite.spriteSize = {32 , 32};
+            sprite.atlasOffset = {30, 0};
+            sprite.spriteSize = {50, 50};
         }
     }
 

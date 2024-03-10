@@ -275,20 +275,20 @@ void platform_swap_buffers()
     SwapBuffers(dc);
 }
 
-void* platform_load_dynamic_library(char* dll)
+void* platform_load_dynamic_library(const char* dll)
 {
     HMODULE result = LoadLibraryA(dll);
-    SM_ASSERT(result, "Failed to load dll: %s", dll);
+    SM_ASSERT(result, "Failed to Load dll : %s", dll);
 
     return result;
 }
-void* platform_load_dynamic_function(void* dll, char* funName)
+
+void* platform_load_dynamic_function(void* dll, const char* funName)
 {
     FARPROC proc = GetProcAddress((HMODULE)dll, funName);
-    SM_ASSERT(proc, "Failed to load function: %s from DLL", funName);
+    SM_ASSERT(proc, "Failed to Load Function : %s from DLL", funName);
 
     return (void*)proc;
-
 }
 
 bool platform_free_dynamic_library(void* dll)

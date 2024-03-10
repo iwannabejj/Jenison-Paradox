@@ -2,10 +2,10 @@
 
 struct Transform
 {
-    ivec2 atlasOffset;
-    ivec2 spriteSize;
     vec2 pos;
     vec2 size;
+    ivec2 atlasOffset;
+    ivec2 spriteSize;
 };
 
 layout (std430, binding = 0) buffer TransformSBO

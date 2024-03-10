@@ -1,4 +1,5 @@
 #pragma once
+
 #include "paradox_lib.h"
 #include "glcorearb.h"
 
