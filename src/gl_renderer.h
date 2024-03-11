@@ -1,7 +1,10 @@
 #pragma once
 
 #include "paradox_lib.h"
+<<<<<<< HEAD
 
+=======
+>>>>>>> c8ddda669f0cf3a913cbccbc569ae78efe3407d5
 #include "glcorearb.h"
 
 static PFNGLCREATEPROGRAMPROC glCreateProgram_ptr;
